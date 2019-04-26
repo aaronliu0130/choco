@@ -6,4 +6,4 @@ If you are interested in helping to maintain them, let me know and I will probab
 
 Packages:
 
-[![msiafterburner](msiafterburner/afterburner-logo.jpg)](https://github.com/HunterZ/choco/tree/master/msiafterburner)
+[![msiafterburner](msiafterburner/MSIAfterburner.png)](https://github.com/HunterZ/choco/tree/master/msiafterburner)
