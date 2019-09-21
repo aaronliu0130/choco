@@ -14,7 +14,7 @@
     <copyright></copyright>
     <licenseUrl>https://raw.githubusercontent.com/HunterZ/choco/master/msiafterburner/license.txt</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>https://hunterz.github.io/choco/msiafterburner/MSIAfterburner.png</iconUrl>
+    <iconUrl>https://rawcdn.githack.com/HunterZ/choco/55c7a5cce5b9b023d2ee80bf24c444adeb84849f/msiafterburner/MSIAfterburner.png</iconUrl>
     <dependencies>
         <dependency id="autohotkey.portable" version="1.1.30.03"/>
     </dependencies>
