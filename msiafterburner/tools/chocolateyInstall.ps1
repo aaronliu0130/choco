@@ -1,6 +1,6 @@
 $packageName = 'msiafterburner'
 $url = 'http://download.msi.com/uti_exe/vga/MSIAfterburnerSetup.zip?__token__=' + $(Invoke-RestMethod https://www.msi.com/api/v1/get_token?date=$(Get-Date -format "yyyyMMdd"))
-$checksum = 'E71A5B2DD4BF010C6742F8138BA3F6500082C46BAF940BA950FE50213D9579E8'
+$checksum = '521CDBE532A8A8DFB3217A4B0B99C6B8F2709B90DCF0D764DBBCBF4B8F1230F9'
 $checksumtype = 'sha256'
 $unpackDir = $(Split-Path -parent $MyInvocation.MyCommand.Definition)
 $unpackFile = Join-Path $unpackDir 'afterburner.zip'
