@@ -1,28 +1,34 @@
 $packageName = 'msiafterburner'
-$installerType = 'EXE'
+$installerType = 'exe'
 $silentArgs = '/S'
-$validExitCodes = @(0) #please insert other valid exit codes here, exit codes for ms http://msdn.microsoft.com/en-us/library/aa368542(VS.85).aspx
-$scriptPath = Split-Path -parent $MyInvocation.MyCommand.Definition
-$ahkFile = "$scriptPath\msiafterburneruninstall.ahk"
-$registryPath32 = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Afterburner'
-$registryPathWow6432 = 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Afterburner'
+$validExitCodes = @(0)
+$scriptPath = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$ahkFile = Join-Path $scriptPath 'chocolateyUninstall.ahk'
+$ahkExe = 'AutoHotKey'
+$ahkRun = "$Env:Temp\$(Get-Random).ahk"
+$packageSearchRegex = '^(MSI Afterburner|RivaTuner Statistics Server).*'
 
-$ProcessActive = Get-Process MSIAfterburner* -ErrorAction SilentlyContinue
-if ($null -ne $ProcessActive) {
-  Stop-Process -ProcessName MSIAfterburner*
-}
+$toolsPath = Split-Path $MyInvocation.MyCommand.Definition
+. $toolsPath\helpers.ps1
 
-Start-Process 'AutoHotkey' $ahkFile
+Stop-Afterburner
 
-if (Test-Path $registryPath32) {
-  $registryPath = $registryPath32
-}
-if (Test-Path $registryPathWow6432) {
-  $registryPath = $registryPathWow6432
-}
-if ($registryPath) {
-  $uninstallString = (Get-ItemProperty -Path $registryPath -Name 'UninstallString').UninstallString
-}
-if ($uninstallString) {
-  Uninstall-ChocolateyPackage $packageName $installerType $silentArgs $uninstallString
-}
+Copy-Item $ahkFile "$ahkRun" -Force
+Start-Process $ahkExe $ahkRun
+
+Get-ItemProperty `
+  -Path @('HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
+          'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
+          'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*') `
+  -ErrorAction:SilentlyContinue `
+| Where-Object `
+  {$_.DisplayName -Match $packageSearchRegex} `
+| ForEach-Object `
+  {Uninstall-ChocolateyPackage `
+    -PackageName "$packageName" `
+    -FileType "$installerType" `
+    -SilentArgs "$($silentArgs)" `
+    -File "$($_.UninstallString.Replace('"',''))" `
+    -ValidExitCodes $validExitCodes}
+
+Remove-Item "$ahkRun" -Force
